@@ -148,9 +148,16 @@ def handle_request(message):
             # TASK 5: PUT — add (key, value) only if key does not already exist.
             # Validate: len(value) <= 999 and len(key + " " + value) <= 970.
             # Return "OK (<key>, <value>) added" or "ERR <key> already exists".
-            increment_stat("put_count")
-
-
+            if len(value) > 999 or len(f"{key} {value}") > 970:
+                increment_stat("error_count")
+                return "ERR Invalid value length"
+            if key in tuple_space:
+                increment_stat("error_count")
+                return f"ERR {key} already exists"
+            else:
+                tuple_space[key] = value
+                return f"OK ({key}, {value}) added"
+            
         else:
             increment_stat("error_count")
             return "ERR Unknown operation"
