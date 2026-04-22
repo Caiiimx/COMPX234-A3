@@ -75,7 +75,15 @@ def handle_client(client_socket):
             # TASK 1: Read the first 3 bytes to get the message size, then read
             # the remaining (size - 3) bytes and decode to a string.
             # Hint: use receive_n(). If nothing arrives, client disconnected — break.
-
+            size_bytes = receive_n(client_socket, 3)
+            if not size_bytes:
+                break
+            msg_size = int(size_bytes.decode().strip())
+            remaining = msg_size - 3
+            msg_bytes = receive_n(client_socket, remaining)
+            if not msg_bytes:
+                break
+            message_buffer = msg_bytes.decode().strip()
 
             # Handle the request
             response = handle_request(message_buffer)
