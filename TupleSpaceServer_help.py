@@ -133,8 +133,12 @@ def handle_request(message):
             # TASK 4: GET — remove key from tuple_space and return its value.
             # Return "OK (<key>, <value>) removed" or "ERR <key> does not exist".
             # Hint: dict.pop(key, None) removes and returns the value, or None if missing.
-            increment_stat("get_count")
-
+            val = tuple_space.pop(key, None)
+            if val is not None:
+                return f"OK ({key}, {val}) removed"
+            else:
+                increment_stat("get_count")
+                return f"ERR {key} does not exist"
 
         elif op == "P":
             if len(parts) < 3:
